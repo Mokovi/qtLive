@@ -17,11 +17,15 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     databasemanager.cpp \
+    livetcpsocket.cpp \
     main.cpp \
+    pack.cpp \
     widget.cpp
 
 HEADERS += \
     databasemanager.h \
+    livetcpsocket.h \
+    pack.h \
     widget.h
 
 FORMS += \

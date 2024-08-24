@@ -6,6 +6,11 @@
 #include <QHostAddress>
 #include <QMessageBox>
 #include "databasemanager.h"
+#include "livetcpsocket.h"
+#include <QVector>
+#include "pack.h"
+#include <QStringList>
+#include <QDebug>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class Widget; }
@@ -21,11 +26,18 @@ public:
 
 private:
     void initNetwork();
+    LiveTcpSocket* findSocket(QTcpSocket* tcpSocket);
+
+private slots:
+    void handleNewConnection();
+    void handleDisconnection();
+    void getData();
 
 private:
     Ui::Widget *ui;
     QTcpServer *serverSocket;
     DatabaseManager& db = DatabaseManager::getInstance();
+    QVector<LiveTcpSocket*> LiveSocketsVector;
 
 };
 #endif // WIDGET_H
