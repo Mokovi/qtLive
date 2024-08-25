@@ -10,7 +10,7 @@ class DatabaseManager
 public:
     static DatabaseManager &getInstance();
     void initDatabase();
-
+    void userSignIn();
 
 private:
     DatabaseManager();

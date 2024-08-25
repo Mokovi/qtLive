@@ -25,7 +25,7 @@ void DatabaseManager::initDatabase()
 
 void DatabaseManager::userSignIn()
 {
-
+    
 }
 
 DatabaseManager::DatabaseManager()

@@ -11,6 +11,7 @@
 #include "pack.h"
 #include <QStringList>
 #include <QDebug>
+#include <QRegularExpression> //正则表达式，用来实现邮箱规范检测
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class Widget; }
@@ -27,6 +28,12 @@ public:
 private:
     void initNetwork();
     LiveTcpSocket* findSocket(QTcpSocket* tcpSocket);
+    bool userLogIn(LiveTcpSocket* liveSocket, Pack pack);
+    bool userSignIn(LiveTcpSocket* liveSocket, Pack pack);
+    bool checkNameRule(QString& username) const;
+    bool checkPwdRule(QString& password) const;
+    bool checkEmailRule(QString& email) const;
+
 
 private slots:
     void handleNewConnection();
