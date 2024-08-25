@@ -28,8 +28,8 @@ public:
 private:
     void initNetwork();
     LiveTcpSocket* findSocket(QTcpSocket* tcpSocket);
-    bool userLogIn(LiveTcpSocket* liveSocket, Pack pack);
-    bool userSignIn(LiveTcpSocket* liveSocket, Pack pack);
+    bool userLogIn(Pack& pack);
+    bool userSignIn(LiveTcpSocket* liveSocket, Pack& pack);
     bool checkNameRule(QString& username) const;
     bool checkPwdRule(QString& password) const;
     bool checkEmailRule(QString& email) const;

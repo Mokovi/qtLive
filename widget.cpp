@@ -39,17 +39,39 @@ LiveTcpSocket* Widget::findSocket(QTcpSocket *tcpSocket)
     return nullptr;
 }
 
-bool Widget::userLogIn(LiveTcpSocket* liveSocket, Pack pack)
+bool Widget::userLogIn(Pack& pack)
 {
-    qDebug() << "登录";
+    QStringList list = pack.getData();
+    QString& username = list[0];
+    QString& password = list[1];
+
+    //检测命名规则
+    if(!checkNameRule(username)){
+        pack.setLogStatus(LOG_NAME_RULE_ERROR);
+        return false;
+    }
+    if(!checkPwdRule(password)){
+        pack.setLogStatus(LOG_PWD_RULE_ERROR);
+        return false;
+    }
+
+    //数据库检查
+    pack.setLogStatus(db.userLogIn(username, password));
+    qDebug()<<pack.getLogStatus();
+    if(pack.getLogStatus() == LOG_SUCCESS)
+    {
+        return true;
+    }
+    return false;
 }
 
-bool Widget::userSignIn(LiveTcpSocket* liveSocket, Pack pack)
+bool Widget::userSignIn(LiveTcpSocket* liveSocket, Pack& pack)
 {
     QStringList list = pack.getData();
     QString& username = list[0];
     QString& password = list[1];
     QString& email = list[2];
+
     //检测命名规则
     if(!checkNameRule(username)){
         pack.setSignStatus(SIGN_NAME_RULE_ERROR);
@@ -64,7 +86,15 @@ bool Widget::userSignIn(LiveTcpSocket* liveSocket, Pack pack)
         return false;
     }
     //数据库检查
-
+    pack.setSignStatus(db.userSignIn(username, password, email));
+    if(pack.getSignStatus() == SIGN_SUCCESS)
+    {
+        liveSocket->set_username(username);
+        liveSocket->set_login_status(true);
+        return true;
+    }
+    liveSocket->set_login_status(false);
+    return false;
 }
 
 bool Widget::checkNameRule(QString &username) const
@@ -146,11 +176,13 @@ void Widget::getData()
         switch ((OperationType)pack.getOperationType())
         {
         case LOGIN:
-            userLogIn(liveSocket, pack);
+            userLogIn(pack);
+            liveSocket->write(pack.data(), 6);
             break;
 
         case SIGNIN:
             userSignIn(liveSocket, pack);
+            liveSocket->write(pack.data(), 6);
             break;
         }
     }
